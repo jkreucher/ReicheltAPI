@@ -9,7 +9,8 @@ Copyright 2021 Jannik Kreucher
 - [Web scraping module for Reichelt Elektronik](#web-scraping-module-for-reichelt-elektronik)
 	- [Table of Contents](#table-of-contents)
 	- [Introduction](#introduction)
-	- [Quick Start](#quick-start)
+	- [Stand Alone](#stand-alone)
+	- [Python Quick Start](#python-quick-start)
 	- [Creating the object](#creating-the-object)
 	- [Searching with a string](#searching-with-a-string)
 	- [Getting more data](#getting-more-data)
@@ -20,9 +21,36 @@ Copyright 2021 Jannik Kreucher
 
 ReicheltAPI is a very simple Python libaray for pulling data from the rather popular german distributor Reichelt Elektronik. This is achived by scraping the Reichelt website with [BeautifulSoup4](https://www.crummy.com/software/BeautifulSoup/). The goal of this project is to build a python module for generating BOMs and price estimates within KiCad.
 
-## Quick Start
+## Stand Alone
+If you just want to get information about a Reichelt part you can use the stand-alone functionality of the module. The usage is pretty simple:
+```
+python3 reichelt.py "<PartName>" <attribute>
+```
+Dont forget the parentheses around the part name when using spaces. The attribute can be one of the following:
+Attribute | Function
+--- | ---
+all       | everything as json for you to mess around
+part      | shows parsed part number, should be the same as "PartName"
+name      | Reichelt product name
+link      | link to the item
+datasheet | link to the pdf datasheet
+1         | price of one item
+10        | price per item when buying 10
+100       | price when ordering 100
+1000      | price when ordering 1000
 
-A very simple script to get started: [`api_test.py`](api_test.py)
+Examples:
+```bash
+~$ python3 reichelt.py "Z84C00-06MHZ" name  # returns name of item
+Z80 Microprozessor, 6 MHz, DIP40
+~$ python3 reichelt.py "Z84C00-06MHZ" 1  # return unit price in Euro
+7.25
+```
+
+
+## Python Quick Start
+
+A very simple script to get started:
 ```python
 import reichelt
 import json

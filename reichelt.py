@@ -78,9 +78,35 @@ class Reichelt:
 	def search_part(self, part):
 		results = self.get_search_results(part)
 		for result in results:
-			if result["part"] == part:
+			if part == result["part"]:
 				# found right entry
 				result.update( self.get_part_information(result["link"]) )
 				return result
 				
 
+# stand alone
+if __name__ == '__main__':
+	import sys
+	if len(sys.argv) < 3:
+		print("Usage: ./reichelt.py \"Part Name\" attribute")
+		print("Possible attributes:")
+		print("    all       - print everything for you to parse")
+		print("    part      - parsed part number")
+		print("    name      - Reichelt product name")
+		print("    link      - web link to product")
+		print("    datasheet - link to pdf datasheet")
+		print("    1         - price for one part")
+		print("    10        - discounted price for 10 parts")
+		print("    100       - discounted price for 100 parts")
+		print("    1000      - discounted price for 1000 parts")
+		exit()
+	
+	app = Reichelt()
+	result = app.search_part(sys.argv[1])
+	try:
+		if sys.argv[2] == "all":
+			print(result)
+		else:
+			print(result[sys.argv[2]])
+	except:
+		print("attribute error")
