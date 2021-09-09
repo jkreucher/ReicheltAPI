@@ -27,17 +27,17 @@ If you just want to get information about a Reichelt part you can use the stand-
 python3 reichelt.py "<PartName>" <attribute>
 ```
 Dont forget the parentheses around the part name when using spaces. The attribute can be one of the following:
-Attribute | Function
---- | ---
-all       | everything as json for you to mess around
-part      | shows parsed part number, should be the same as "PartName"
-name      | Reichelt product name
-link      | link to the item
-datasheet | link to the pdf datasheet
-1         | price of one item
-10        | price per item when buying 10
-100       | price when ordering 100
-1000      | price when ordering 1000
+| Attribute   | Function                                                   |
+| ----------- | ---------------------------------------------------------- |
+| `all`       | everything as json for you to mess around                  |
+| `part`      | shows parsed part number, should be the same as "PartName" |
+| `name`      | Reichelt product name                                      |
+| `link`      | link to the item                                           |
+| `datasheet` | link to the pdf datasheet                                  |
+| `1`         | price of one item                                          |
+| `10`        | price per item when buying 10                              |
+| `100`       | price when ordering 100                                    |
+| `1000`      | price when ordering 1000                                   |
 
 Examples:
 ```bash
