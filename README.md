@@ -22,7 +22,7 @@ ReicheltAPI is a very simple Python libaray for pulling data from the rather pop
 
 ## Quick Start
 
-A very simple script to get started:
+A very simple script to get started: [`api_test.py`](api_test.py)
 ```python
 import reichelt
 import json
