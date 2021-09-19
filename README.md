@@ -24,7 +24,7 @@ ReicheltAPI is a very simple Python libaray for pulling data from the rather pop
 ## Stand Alone
 If you just want to get information about a Reichelt part you can use the stand-alone functionality of the module. The usage is pretty simple:
 ```
-python3 reichelt.py "<PartName>" <attribute>
+python3 reichelt.py "<ReicheltArtikelNr>" <attribute>
 ```
 Dont forget the parentheses around the part name when using spaces. The attribute can be one of the following:
 | Attribute   | Function                                                   |
