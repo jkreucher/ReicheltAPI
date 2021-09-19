@@ -2,8 +2,6 @@
 
 Copyright 2021 Jannik Kreucher
 
-**NOTE: This Project is still work in progress!**
-
 
 ## Table of Contents
 - [Web scraping module for Reichelt Elektronik](#web-scraping-module-for-reichelt-elektronik)
