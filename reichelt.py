@@ -8,13 +8,13 @@ from bs4 import BeautifulSoup
 class Reichelt:
 	def __init__(self):
 		self.req_headers = {
-			'Accept-Language': 'de,en-US;q=0.7,en;q=0.3'
+			'Accept-Language': 'en-US;q=0.7,en;q=0.3'
 		}
 	
 
 	def get_search_results(self, keyword):
 		# download search results as raw html
-		url = "https://www.reichelt.de/index.html?ACTION=446&LA=0&nbc=1&q=%s" % keyword.lower().replace(" ", "%20")
+		url = "https://www.reichelt.com/index.html?ACTION=446&LA=0&nbc=1&q=%s" % keyword.lower().replace(" ", "%20")
 		website = requests.get(url, headers=self.req_headers).content.decode('utf-8')
 		parser = BeautifulSoup(website, 'html.parser')
 		# get every part in the search result list. Each part is in a div named "al_gallery_article".
@@ -25,7 +25,7 @@ class Reichelt:
 			# get link html tag to part
 			part_link = part_html.find("a", "al_artinfo_link")
 			# extract data
-			part["part"] = part_link.contents[0].strip().replace("Artikel-Nr.: ","") # part number
+			part["part"] = part_link.contents[0].strip().replace("item-no.: ","") # part number
 			part["name"] = part_link.contents[2].strip() # part name
 			part["link"] = part_link.get("href") # href
 			# find price if there is one
@@ -52,7 +52,7 @@ class Reichelt:
 		# datasheet
 		information["datasheet"] = None
 		if parser.find("div", "av_datasheet"):
-			information["datasheet"] = "https://www.reichelt.de"+parser.find("div", "av_datasheet").a.get("href")
+			information["datasheet"] = "https://www.reichelt.com"+parser.find("div", "av_datasheet").a.get("href")
 		# parse information from html
 		information_html = parser.find("div", "av_props_inline")
 		for section_html in information_html.find_all("ul", "av_propview"):
@@ -89,11 +89,6 @@ class Reichelt:
 
 # stand alone
 if __name__ == '__main__':
-	api = Reichelt()
-	result = api.search_part("74HC 00")
-	print(result)
-
-	exit(0)
 	import sys
 	if len(sys.argv) < 3:
 		print("Usage: ./reichelt.py \"Part Name\" attribute")

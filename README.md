@@ -1,30 +1,32 @@
-# Web scraping module for Reichelt Elektronik
+# Reichelt Elektronik Web Scraping Module
 
-Copyright 2021 Jannik Kreucher
+Copyright 2024 Jannik Kreucher
+
+A Python module for extracting data from Reichelt Elektronik, a popular German electronics distributor.
 
 
 ## Table of Contents
 - [Web scraping module for Reichelt Elektronik](#web-scraping-module-for-reichelt-elektronik)
 	- [Table of Contents](#table-of-contents)
 	- [Introduction](#introduction)
-	- [Stand Alone](#stand-alone)
+	- [Standalone Usage](#standalone-usage)
 	- [Python Quick Start](#python-quick-start)
 	- [Creating the object](#creating-the-object)
 	- [Searching with a string](#searching-with-a-string)
-	- [Getting more data](#getting-more-data)
+	- [Retrieving Detailed Information](#retrieving-detailed-information)
 	- [But I want it in one line](#but-i-want-it-in-one-line)
 	- [Downloading Datasheets](#downloading-datasheets)
 
 ## Introduction
 
-ReicheltAPI is a very simple Python libaray for pulling data from the rather popular german distributor Reichelt Elektronik. This is achived by scraping the Reichelt website with [BeautifulSoup4](https://www.crummy.com/software/BeautifulSoup/). The goal of this project is to build a python module for generating BOMs and price estimates within KiCad.
+**ReicheltAPI** is a lightweight Python library for scraping data from Reichelt Elektronik using [BeautifulSoup4](https://www.crummy.com/software/BeautifulSoup/). This module aims to assist in generating Bills of Materials (BOMs) and price estimates within KiCad by retrieving information directly from the Reichelt website.
 
-## Stand Alone
-If you just want to get information about a Reichelt part you can use the stand-alone functionality of the module. The usage is pretty simple:
+## Standalone Usage
+If you just want to query information about a Reichelt part, you can use the module in standalone mode. The command syntax is simple:
+```bash
+python3 reichelt.py "<ReicheltPartNo>" <attribute>
 ```
-python3 reichelt.py "<ReicheltArtikelNr>" <attribute>
-```
-Dont forget the parentheses around the part name when using spaces. The attribute can be one of the following:
+Make sure to enclose the part number in quotes if it contains spaces. The `<attribute>` can be one of the following:
 | Attribute   | Function                                                   |
 | ----------- | ---------------------------------------------------------- |
 | `all`       | everything as json for you to mess around                  |
@@ -48,7 +50,7 @@ Z80 Microprozessor, 6 MHz, DIP40
 
 ## Python Quick Start
 
-A very simple script to get started:
+Here's a simple script to get you started:
 ```python
 import reichelt
 import json
@@ -66,46 +68,45 @@ print(json.dumps(result, indent=4))
 api.get_datasheet(result["datasheet"], part+".pdf")
 ```
 
-Here the variable *result* contains the following:
+### Example Output:
 ```json
 {
     "part": "74HC 00",
-    "name": "4-fach, 2 Eingangs-NAND-Gatter,  2 ... 6 V, DIL-14",
-    "link": "https://www.reichelt.de/de/de/4-fach-[...]",
-    "1": 0.26,
+    "name": "4-fold, 2 input NAND gates, 2 ... 6 V, DIL-14",
+    "link": "https://www.reichelt.com/de/en/4-fold-2-input-nand-gates-2--6-v-dil-14-74hc-00-p3119.html?&trstct=pos_1&nbc=1&SID=9433fcf4a460e776488c64328e79f537447333d0260dc8fc87708",
+    "1": 0.24,
     "10": null,
     "100": null,
     "1000": null,
-    "datasheet": "https://www.reichelt.de/index.html?[...].pdf",
-    "Allgemeines": {
-        "Familie": "74HC",
-        "Modell": "NAND-Gate",
-        "Typ": "2 Eingänge",
-        "Ausführung": "4-Elemente",
-        "Bauform": "DIP-14"
+    "datasheet": "https://www.reichelt.com/index.html?ACTION=7&LA=3&OPEN=0&INDEX=0&FILENAME=A200%2FDS_NXP_74HC00.pdf",
+    "General": {
+        "family": "74HC",
+        "Model": "NAND-Gate",
+        "Type": "4 inputs",
+        "Design": "4-Elemente",
+        "Mounting form": "DIP-14"
     },
-    "Sonstiges": {
-        "Temperaturbereich": "-40 ... +85 °C"
+    "Other": {
+        "Temperature range": "-40 ... +85"
     },
-    "Elektrische Werte": {
-        "Versorgungsspannung": "2,0 ... 6,0 VDC",
-        "Eingangsspannung Vi": "0 ... 6,0 VDC",
-        "Leistung": "500 mW",
-        "Eingangsspannung ViH": "4,2 VDC",
-        "Eingangsspannung ViL": "0,5 VDC"
+    "Electrical values": {
+        "Supply voltage": "2.0 ... 6.0 VDC",
+        "Input voltage": "0 ... 6.0 VDC",
+        "Performance": "500 mW",
+        "Input voltage ViH": "4.2 VDC",
+        "Input voltage ViL": "0.5 VDC"
     },
-    "Herstellerangaben": {
-        "Verpackungsgewicht": "0.001 kg",
-        "RoHS": "konform",
-        "EAN / GTIN": "9900000031190"
+    "Manufacturer specifications": {
+        "Package weight": "0.001 kg",
+        "RoHS": "conform"
     },
     "categories": [
-        "Startseite",
-        "Bauelemente",
-        "Bauelemente, aktiv",
-        "ICs & Controller",
-        "ICs digital",
-        "Logik-ICs"
+        "Home",
+        "Components",
+        "Active components",
+        "ICs and controllers",
+        "Digital ICs",
+        "Logic ICs"
     ]
 }
 ```
@@ -113,82 +114,100 @@ Here the variable *result* contains the following:
 
 ## Creating the object
 
-To start scraping data, the object needs to be constructed:
+To begin scraping, you need to create an instance of the `Reichelt` object:
 ```python
 import reichelt
 foo = reichelt.Reichelt()
 ```
-Note that the file [`reichelt.py`](reichelt.py) needs to be in the same directory
+Ensure that the [`reichelt.py`](reichelt.py) file is in the same directory as your script.
 
 
 ## Searching with a string
 
-The function [`get_search_results(keyword)`](reichelt.py) starts a search on the Reichelt homepage like you would in your browser. But it returns a dict with the most important information.
+You can search for a part using the [`get_search_results(keyword)`](reichelt.py) function, which mimics a browser search on the Reichelt homepage but returns the results as a dictionary.
+
 ```python
-result = foo.get_search_results("Z80")
+result = foo.get_search_results("Z80 CPU")
 ```
 
+### Example Output
 ```json
 [
-	{
-        "part": "Z84C00-10MHZ",
-        "name": "Z80 Microprozessor, 10 MHz, DIP40",
-        "link": "https://www.reichelt.de/de/de/z80-microprozessor-10-mhz-dip40-z84c00-10mhz-p31823.html[...]",
-        "1": 7.12,
+    {
+        "part": "EZ80F91AZA50EK",
+        "name": "8-bit microcontroller, eZ80AcclaimPlus!, LQFP-144",
+        "link": "https://www.reichelt.com/de/en/8-bit-microcontroller-ez80acclaimplus-lqfp-144-ez80f91aza50ek-p376411.html?&trstct=pos_0&nbc=1&SID=968601949b80683845a58c8f12e7374d7421209b4623f36305e19",
+        "1": 17.7,
         "10": null,
         "100": null,
         "1000": null
     },
     {
-        "part": "Z84C30-06MHZ",
-        "name": "Z80 MICRPROZESSOR DIL-28",
-        "link": "https://www.reichelt.de/de/de/z80-micrprozessor-dil-28-z84c30-06mhz-p23034.html[...]",
-        "1": 6.67,
+        "part": "EZ80F92AZ020EG",
+        "name": "8-bit microcontroller, eZ80AcclaimPlus!, LQFP-144",
+        "link": "https://www.reichelt.com/de/en/8-bit-microcontroller-ez80acclaimplus-lqfp-144-ez80f92az020eg-p376413.html?&trstct=pos_1&nbc=1&SID=968601949b80683845a58c8f12e7374d7421209b4623f36305e19",
+        "1": 13.95,
         "10": null,
         "100": null,
         "1000": null
-    }
+    },
 ...
 ```
-The function returns a array of the items found by the keyword or string. Note that only items on the first page are parsed. The key 1 is the price for this specific item. The keys 10, 100 and 1000 show the discounted price for the respective order volume. Null means there is no discount obviously.
 
 
-## Getting more data
+## Retrieving Detailed Information
 
-To get even more information about a item the function [`get_search_results(keyword)`](reichelt.py) can be utilized. It requires a link to a specific item and returns more information about the product.
+To retrieve detailed information about a specific item, use the [`get_search_results(keyword)`](reichelt.py) function. Pass the URL of the product page to this function.
+
 ```python
 product = foo.get_part_information("https://www.reichelt.de/z80-microprozessor-10-mhz-dip40-z84c00-10mhz-p31823.html?&trstct=pos_2&nbc=1")
 ```
-Or if you want to use the link provided by *get_search_results* above directly:
+Or, you can directly use the link obtained from [`get_search_results`](reichelt.py):
 ```python
 product = foo.get_part_information(result[0]["link"])
 ```
 
 ```json
 {
-    "datasheet": "https://www.reichelt.de/index.html?ACTION=7&LA=3&OPEN=0&INDEX=0&FILENAME=A300%2FZ84C00%23ZIL.pdf",
-    "Allgemeines": {
-        "Modell": "Microprozessor",
-        "Typ": "CPU",
-        "Ausführung": "4 Kanäle",
-        "Bauform": "PDIP-40"
+    "datasheet": "https://www.reichelt.com/index.html?ACTION=7&LA=3&OPEN=0&INDEX=0&FILENAME=A200%2FPS0270.pdf",
+    "General": {
+        "Type": "8-Bit Mikrocontroller",
+        "Technology": "eZ80",
+        "Mounting form": "LQFP-144",
+        "family": "EZ80F91"
     },
-    "Besonderheiten": {
-        "CPU Takt": "10 MHz"
+    "Specials": {
+        "CPU clock": "50 MHz"
     },
-    "Herstellerangaben": {
-        "Hersteller": "ZILOG",
-        "Artikelnummer des Herstellers": "Z84C0010PEG",
-        "Verpackungsgewicht": "0.007 kg",
-        "EAN / GTIN": "9900000318239"
+    "Implementation": {
+        "Memory": "256",
+        "RAM": "8 kByte",
+        "I/O-Pins": "32",
+        "16-bit Timer": "4"
+    },
+    "Interfaces": {
+        "I²C": "1",
+        "UART": "2"
+    },
+    "Electrical values": {
+        "Supply voltage": "3..3.6 VDC"
+    },
+    "Other": {
+        "Temperature range": "-40..+105"
+    },
+    "Manufacturer specifications": {
+        "Manufacturer": "ZILOG",
+        "Factory number": "EZ80F91AZA50EK",
+        "Package weight": "0.014 kg",
+        "RoHS": "conform"
     },
     "categories": [
-        "Startseite",
-        "Bauelemente",
-        "Bauelemente, aktiv",
-        "ICs & Controller",
-        "ICs digital",
-        "8-Bit Microcontroller"
+        "Home",
+        "Components",
+        "Active components",
+        "ICs and controllers",
+        "Digital ICs",
+        "8-bit microcontrollers"
     ]
 }
 ```
@@ -196,7 +215,8 @@ product = foo.get_part_information(result[0]["link"])
 
 ## But I want it in one line
 
-[`search_part(part)`](reichelt.py) combines the two and is meant for getting data about an item when the Reichelt part number is known. The part number is passed as a string. Note that the part number must be exact!
+If you already know the exact part number, you can combine both search and detail retrieval using the [`search_part(part)`](reichelt.py) function:
+
 ```python
 product = reichelt.Reichelt().search_part("74HC 00")
 ```
@@ -204,10 +224,8 @@ product = reichelt.Reichelt().search_part("74HC 00")
 
 ## Downloading Datasheets
 
-This module allows you to download the datasheet from Reichelt as well. Since the link to the datasheet is parsed by *get_part_information* it is very easy to implement:
+The module also allows you to download the product's datasheet directly from Reichelt. The URL is extracted by the [`get_part_information`](reichelt.py) function, and downloading is as simple as:
 ```python
 foo.get_datasheet(product["datasheet"], "foo.pdf")
 ```
-Now the datasheet for the product above is saved in "foo.pdf".
-
-
+This will save the datasheet as `foo.pdf` in your current directory.
