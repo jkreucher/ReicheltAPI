@@ -10,7 +10,7 @@ api = reichelt.Reichelt()
 result = api.search_part(part)
 
 # print info
-print(json.dumps(result, indent=4))
+print(json.dumps(result, indent=4, ensure_ascii=False))
 
 # download datasheet
 api.get_datasheet(result["datasheet"], part+".pdf")

@@ -1,18 +1,21 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 import urllib.request
+import requests
 from bs4 import BeautifulSoup
 
 
 class Reichelt:
 	def __init__(self):
-		pass
+		self.req_headers = {
+			'Accept-Language': 'de,en-US;q=0.7,en;q=0.3'
+		}
 	
 
 	def get_search_results(self, keyword):
 		# download search results as raw html
-		link = "https://www.reichelt.de/index.html?ACTION=446&LA=0&nbc=1&q=%s" % keyword.lower().replace(" ", "%20")
-		website = urllib.request.urlopen(link).read().decode('utf-8')
+		url = "https://www.reichelt.de/index.html?ACTION=446&LA=0&nbc=1&q=%s" % keyword.lower().replace(" ", "%20")
+		website = requests.get(url, headers=self.req_headers).content.decode('utf-8')
 		parser = BeautifulSoup(website, 'html.parser')
 		# get every part in the search result list. Each part is in a div named "al_gallery_article".
 		parts=[]
@@ -40,9 +43,9 @@ class Reichelt:
 		return parts
 	
 
-	def get_part_information(self, link):
+	def get_part_information(self, url):
 		# download website
-		website = urllib.request.urlopen(link).read().decode()
+		website = requests.get(url, headers=self.req_headers).content.decode('utf-8')
 		parser = BeautifulSoup(website, "html.parser")
 		# technical information json
 		information = {}
@@ -68,8 +71,8 @@ class Reichelt:
 		return information
 	
 
-	def get_datasheet(self, link, filename):
-		data = urllib.request.urlopen(link).read()
+	def get_datasheet(self, url, filename):
+		data = requests.get(url, headers=self.req_headers).content
 		f = open(filename, "wb")
 		f.write(data)
 		f.close()
@@ -86,6 +89,11 @@ class Reichelt:
 
 # stand alone
 if __name__ == '__main__':
+	api = Reichelt()
+	result = api.search_part("74HC 00")
+	print(result)
+
+	exit(0)
 	import sys
 	if len(sys.argv) < 3:
 		print("Usage: ./reichelt.py \"Part Name\" attribute")
