@@ -12,5 +12,9 @@ result = api.search_part(part)
 # print info
 print(json.dumps(result, indent=2, ensure_ascii=False))
 
-# download datasheet
-api.get_datasheet(result["datasheets"][0], part+".pdf")
+# download datasheet (if there is one)
+if result["datasheets"]:
+    api.get_datasheet(
+        result["datasheets"][0],
+        result["part"].replace(" ","_")+".pdf"
+    )
